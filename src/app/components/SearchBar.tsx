@@ -7,11 +7,14 @@ export default function SearchBar({
 }) {
 	const [search, setSearch] = useState("");
 	const input = useRef<HTMLInputElement>(null);
+	const lastSearch = useRef("");
 
 	useEffect(() => {
 		if (search.trim() === "") return;
 		const timer = setTimeout(() => {
+			if (search === lastSearch.current) return;
 			handleSearch(search);
+			lastSearch.current = search;
 		}, 2000);
 		return () => clearTimeout(timer);
 	}, [handleSearch, search]);
