@@ -36,7 +36,6 @@ const getFilm = async (id: string) => {
 		`http://www.omdbapi.com/?i=${id}&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
 	);
 	const data = await res.json();
-	console.log(data);
 	return data;
 };
 
@@ -57,9 +56,16 @@ export default function Details({
 
 	return (
 		<div className="flex items-center justify-center min-h-screen">
+			{/* back button */}
+			<div
+				className="bg-slate-950 p-2 rounded-lg hover:bg-slate-900 transition duration-200 w-32 cursor-pointer"
+				onClick={() => window.history.back()}
+			>
+				&larr; Back
+			</div>
 			{loading ? (
-				<div className="animate-pulse flex flex-row items-center justify-center px-24 gap-8">
-					<div className="flex justify-center items-center bg-slate-900 rounded-lg h-[450px] w-[300px] mb-2">
+				<div className="flex flex-row items-center justify-center px-24 gap-8 animate-pulse">
+					<div className="flex justify-center items-center bg-slate-900 rounded-lg h-[26rem] w-[18rem] mb-2">
 						<svg
 							className="w-10 h-10 text-gray-200 dark:text-gray-600"
 							aria-hidden="true"
@@ -72,17 +78,17 @@ export default function Details({
 						</svg>
 					</div>
 					<div className="flex flex-col w-1/2 justify-around">
-						<h1 className="bg-slate-900 h-12 w-[550px] rounded-lg" />
+						<h1 className="bg-slate-900 h-12 w-[30rem] rounded-lg" />
 						<div className="mt-2">
-							<p className="bg-slate-900 h-6 w-[600px] rounded-lg" />
-							<p className="bg-slate-900 h-6 w-[600px] rounded-lg mt-2" />
-							<p className="bg-slate-900 h-6 w-[300px] rounded-lg mt-2" />
+							<p className="bg-slate-900 h-6 w-[32rem] rounded-lg" />
+							<p className="bg-slate-900 h-6 w-[32rem] rounded-lg mt-2" />
+							<p className="bg-slate-900 h-6 w-[16rem] rounded-lg mt-2" />
 						</div>
-						<p className="bg-slate-900 h-6 w-[150px] rounded-lg mt-8" />
-						<p className="bg-slate-900 h-6 w-[200px] rounded-lg mt-2" />
-						<p className="bg-slate-900 h-6 w-[125px] rounded-lg mt-2" />
-						<p className="bg-slate-900 h-6 w-[300px] rounded-lg mt-2" />
-						<p className="bg-slate-900 h-6 w-[450px] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[8rem] rounded-lg mt-8" />
+						<p className="bg-slate-900 h-6 w-[12rem] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[6rem] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[16rem] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[22rem] rounded-lg mt-2" />
 					</div>
 				</div>
 			) : (

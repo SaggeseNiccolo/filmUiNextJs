@@ -11,7 +11,6 @@ export async function getFilms(title: string, page: number) {
 		`http://www.omdbapi.com/?s=${title}&page=${page}&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
 	);
 	const data = await res.json();
-	console.log(data);
 	return data;
 }
 
@@ -68,7 +67,7 @@ export default function Home() {
 							</Link>
 					  ))}
 			</div>
-			{loading === false && (
+			{!loading && (films as any)?.Search?.length > 0 && (
 				<Pagination handlePagination={handlePagination} page={page} />
 			)}
 		</main>
