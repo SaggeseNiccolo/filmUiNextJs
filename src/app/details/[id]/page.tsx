@@ -58,8 +58,8 @@ export default function Details({
 	return (
 		<div className="flex items-center justify-center min-h-screen">
 			{loading ? (
-				<div className="animate-pulse">
-					<div className="flex justify-center items-center bg-slate-900 rounded-lg h-64 w-44 mb-2">
+				<div className="animate-pulse flex flex-row items-center justify-center px-24 gap-8">
+					<div className="flex justify-center items-center bg-slate-900 rounded-lg h-[450px] w-[300px] mb-2">
 						<svg
 							className="w-10 h-10 text-gray-200 dark:text-gray-600"
 							aria-hidden="true"
@@ -71,8 +71,19 @@ export default function Details({
 							<path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
 						</svg>
 					</div>
-					<h3 className="bg-slate-900 h-6 w-2/3 mb-2 rounded-lg" />
-					<p className="bg-slate-900 h-4 w-1/3 rounded-lg" />
+					<div className="flex flex-col w-1/2 justify-around">
+						<h1 className="bg-slate-900 h-12 w-[550px] rounded-lg" />
+						<div className="mt-2">
+							<p className="bg-slate-900 h-6 w-[600px] rounded-lg" />
+							<p className="bg-slate-900 h-6 w-[600px] rounded-lg mt-2" />
+							<p className="bg-slate-900 h-6 w-[300px] rounded-lg mt-2" />
+						</div>
+						<p className="bg-slate-900 h-6 w-[150px] rounded-lg mt-8" />
+						<p className="bg-slate-900 h-6 w-[200px] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[125px] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[300px] rounded-lg mt-2" />
+						<p className="bg-slate-900 h-6 w-[450px] rounded-lg mt-2" />
+					</div>
 				</div>
 			) : (
 				<div className="flex flex-row items-center justify-center px-24 gap-8">
@@ -85,15 +96,13 @@ export default function Details({
 						priority={true}
 					/>
 					<div className="flex flex-col w-1/2 justify-around">
-						<h1 className="text-4xl font-bold mt-6">
-							{film.Title}
-						</h1>
+						<h1 className="text-4xl font-bold">{film.Title}</h1>
 						<p className="text-lg mt-2">{film.Plot}</p>
 						<p className="text-lg mt-8">
 							<strong>Year:</strong> {film.Year}
 						</p>
 						<p className="text-lg mt-2">
-							<strong>Rated:</strong> {film.Rated}
+							<strong>Rated:</strong> {film.Ratings[0].Value}
 						</p>
 						<p className="text-lg mt-2">
 							<strong>Released:</strong> {film.Released}
@@ -106,6 +115,9 @@ export default function Details({
 						</p>
 						<p className="text-lg mt-2">
 							<strong>Director:</strong> {film.Director}
+						</p>
+						<p className="text-lg mt-2">
+							<strong>Actors:</strong> {film.Actors}
 						</p>
 					</div>
 				</div>

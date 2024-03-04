@@ -37,10 +37,10 @@ export default function Home() {
 	const handlePagination = (type: string) => {
 		if (type === "prev") {
 			if (page === 1) return;
-			setFilms([]);
+			setLoading(true);
 			setPage(page - 1);
 		} else {
-			setFilms([]);
+			setLoading(true);
 			setPage(page + 1);
 		}
 	};
@@ -69,7 +69,7 @@ export default function Home() {
 					  ))}
 			</div>
 			{loading === false && (
-				<Pagination handlePagination={handlePagination} />
+				<Pagination handlePagination={handlePagination} page={page} />
 			)}
 		</main>
 	);

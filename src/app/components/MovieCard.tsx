@@ -8,7 +8,7 @@ interface MovieCardProps {
 
 export default function MovieCard(props: MovieCardProps) {
 	return (
-		<div className="p-4 cursor-pointer hover:scale-105 transition duration-200 rounded-lg bg-slate-950">
+		<div className="flex flex-col justify-between p-4 cursor-pointer hover:scale-105 transition duration-200 rounded-lg bg-slate-950 min-h-[400px]">
 			{props.Poster !== "N/A" && (
 				<Image
 					src={props.Poster}
