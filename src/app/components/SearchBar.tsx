@@ -24,7 +24,7 @@ export default function SearchBar({
 			<input
 				type="text"
 				placeholder="Search for a movie"
-				className="w-2/3 p-4 text-slate-100 bg-slate-950 border-2 border-slate-100 rounded-lg transition duration-200 hover:bg-slate-900 focus:bg-slate-800"
+				className="w-2/3 p-4 text-slate-100 bg-slate-950 border-2 border-slate-800 rounded-lg transition duration-200 hover:bg-slate-900 focus:bg-slate-800"
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				ref={input}
