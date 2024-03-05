@@ -55,12 +55,12 @@ export default function Details({
 	}, [id]);
 
 	return (
-		<div className="flex items-center justify-center min-h-screen mt-16">
+		<div className="flex items-center justify-center min-h-screen">
 			<div
-				className="p-2 cursor-pointer absolute top-2 left-4 z-10 text-2xl hover:scale-110 transition duration-200 flex items-center justify-center"
+				className="p-2 cursor-pointer absolute top-2 left-4 z-10 text-2xl hover:scale-125 transition duration-200 flex items-center justify-center"
 				onClick={() => window.history.back()}
 			>
-				&larr;
+				{"<"}
 			</div>
 			{loading ? (
 				skeleton()

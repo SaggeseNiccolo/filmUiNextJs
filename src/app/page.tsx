@@ -45,26 +45,34 @@ export default function Home() {
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between px-24 py-12">
 			<SearchBar handleSearch={handleSearch} />
-			<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-				{loading
-					? [...Array(10)].map((_, i) => (
-							<MovieCardSkeleton key={i} />
-					  ))
-					: (films as any)?.Search?.map((film: { imdbID: any }) => (
-							<Link
-								href={`/details/${film.imdbID}`}
+			{loading ? (
+				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+					{[...Array(10)].map((_, i) => (
+						<MovieCardSkeleton key={i} />
+					))}
+				</div>
+			) : (films as any)?.Search?.length > 0 ? (
+				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+					{(films as any)?.Search?.map((film: { imdbID: any }) => (
+						<Link
+							href={`/details/${film.imdbID}`}
+							key={film.imdbID}
+						>
+							<MovieCard
+								Title={""}
+								Year={""}
+								Poster={""}
 								key={film.imdbID}
-							>
-								<MovieCard
-									Title={""}
-									Year={""}
-									Poster={""}
-									key={film.imdbID}
-									{...film}
-								/>
-							</Link>
-					  ))}
-			</div>
+								{...film}
+							/>
+						</Link>
+					))}
+				</div>
+			) : (
+				<div className="text-3xl text-slate-100 flex flex-1 items-center justify-center">
+					No films found
+				</div>
+			)}
 			{!loading && (films as any)?.Search?.length > 0 && (
 				<Pagination handlePagination={handlePagination} page={page} />
 			)}
