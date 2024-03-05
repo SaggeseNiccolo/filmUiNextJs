@@ -34,12 +34,10 @@ export default function Home() {
 	};
 
 	const handlePagination = (type: string) => {
+		setLoading(true);
 		if (type === "prev") {
-			if (page === 1) return;
-			setLoading(true);
 			setPage(page - 1);
 		} else {
-			setLoading(true);
 			setPage(page + 1);
 		}
 	};
