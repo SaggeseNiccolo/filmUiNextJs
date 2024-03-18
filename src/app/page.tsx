@@ -15,9 +15,12 @@ export async function getFilms(title: string, page: number) {
 }
 
 export default function Home() {
+	const initialTitle = sessionStorage.getItem("title") || "spider";
+	const initialPage = parseInt(sessionStorage.getItem("page") || "1");
+
 	const [films, setFilms] = useState([]);
-	const [title, setTitle] = useState("spider");
-	const [page, setPage] = useState(1);
+	const [title, setTitle] = useState(initialTitle);
+	const [page, setPage] = useState(initialPage);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -26,6 +29,14 @@ export default function Home() {
 			setLoading(false);
 		});
 	}, [title, page]);
+
+	useEffect(() => {
+		sessionStorage.setItem("title", title);
+	}, [title]);
+
+	useEffect(() => {
+		sessionStorage.setItem("page", page.toString());
+	}, [page]);
 
 	const handleSearch = (search: string) => {
 		setLoading(true);
@@ -73,9 +84,13 @@ export default function Home() {
 					No films found
 				</div>
 			)}
-			{!loading && (films as any)?.Search?.length > 0 && (
-				<Pagination handlePagination={handlePagination} page={page} />
-			)}
+			{/* {(films as any)?.Search?.length > 0 && ( */}
+			<Pagination
+				handlePagination={handlePagination}
+				page={page}
+				maxPage={(films as any)?.totalResults / 10}
+			/>
+			{/* )} */}
 		</main>
 	);
 }

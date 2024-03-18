@@ -39,6 +39,52 @@ const getFilm = async (id: string) => {
 	return data;
 };
 
+const addFavorite = (film: Film) => {
+	const favorite = localStorage.getItem("favorite");
+	if (favorite) {
+		const favoriteArray = JSON.parse(favorite);
+		const index = favoriteArray.findIndex(
+			(fav: { imdbID: string }) => fav.imdbID === film.imdbID
+		);
+		if (index === -1) {
+			localStorage.setItem(
+				"favorite",
+				JSON.stringify([...favoriteArray, film])
+			);
+		}
+	} else {
+		localStorage.setItem("favorite", JSON.stringify([film]));
+	}
+};
+
+const removeFavorite = (id: string) => {
+	const favorite = localStorage.getItem("favorite");
+	if (favorite) {
+		const favoriteArray = JSON.parse(favorite);
+		const index = favoriteArray.findIndex(
+			(fav: { imdbID: string }) => fav.imdbID === id
+		);
+		if (index !== -1) {
+			favoriteArray.splice(index, 1);
+			localStorage.setItem("favorite", JSON.stringify(favoriteArray));
+		}
+	}
+};
+
+const checkFavorite = (id: string) => {
+	const favorite = localStorage.getItem("favorite");
+	if (favorite) {
+		const favoriteArray = JSON.parse(favorite);
+		const index = favoriteArray.findIndex(
+			(fav: { imdbID: string }) => fav.imdbID === id
+		);
+		if (index !== -1) {
+			return true;
+		}
+	}
+	return false;
+};
+
 export default function Details({
 	params: { id },
 }: {
@@ -46,6 +92,11 @@ export default function Details({
 }) {
 	const [film, setFilm] = useState<Film>({} as Film);
 	const [loading, setLoading] = useState(true);
+	const [isFavorite, setIsFavorite] = useState(false);
+
+	useEffect(() => {
+		setIsFavorite(checkFavorite(id));
+	}, [id]);
 
 	useEffect(() => {
 		getFilm(id).then((data) => {
@@ -53,6 +104,15 @@ export default function Details({
 			setLoading(false);
 		});
 	}, [id]);
+
+	const handleFavorite = () => {
+		if (!isFavorite) {
+			addFavorite(film);
+		} else {
+			removeFavorite(id);
+		}
+		setIsFavorite(!isFavorite);
+	};
 
 	return (
 		<div className="flex items-center justify-center min-h-screen">
@@ -65,41 +125,77 @@ export default function Details({
 			{loading ? (
 				skeleton()
 			) : (
-				<div className="flex flex-row items-center justify-center px-24 gap-8">
-					<Image
-						src={film.Poster}
-						alt={film.Title}
-						width={300}
-						height={450}
-						className="rounded-lg"
-						priority={true}
-					/>
-					<div className="flex flex-col w-1/2 justify-around">
-						<h1 className="text-4xl font-bold">{film.Title}</h1>
-						<p className="text-lg mt-2">{film.Plot}</p>
-						<p className="text-lg mt-8">
-							<strong>Year:</strong> {film.Year}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Rated:</strong> {film.Ratings[0].Value}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Released:</strong> {film.Released}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Runtime:</strong> {film.Runtime}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Genre:</strong> {film.Genre}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Director:</strong> {film.Director}
-						</p>
-						<p className="text-lg mt-2">
-							<strong>Actors:</strong> {film.Actors}
-						</p>
+				<>
+					{!isFavorite ? (
+						<svg
+							className="w-6 h-6 text-white absolute top-4 right-4 z-10 cursor-pointer hover:scale-110 transition duration-200 active:scale-90"
+							aria-hidden="true"
+							fill="currentColor"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 20"
+							onClick={() => handleFavorite()}
+						>
+							<path
+								fillRule="evenodd"
+								d="M8 16.941l-.941-.941C3.059 12.309 0 9.191 0 5.5 0 2.462 2.462 0 5.5 0 7.309 0 8.941 1.191 8 2.941 7.059 1.191 8.691 0 10.5 0 13.538 0 16 2.462 16 5.5c0 3.691-3.059 6.809-7.059 10.5L8 16.941Z"
+							/>
+						</svg>
+					) : (
+						<svg
+							className="w-6 h-6 text-red-500 absolute top-4 right-4 z-10 cursor-pointer hover:scale-110 transition duration-200 active:scale-90"
+							aria-hidden="true"
+							fill="currentColor"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 20"
+							onClick={() => handleFavorite()}
+						>
+							<path
+								fillRule="evenodd"
+								d="M8 16.941l-.941-.941C3.059 12.309 0 9.191 0 5.5 0 2.462 2.462 0 5.5 0 7.309 0 8.941 1.191 8 2.941 7.059 1.191 8.691 0 10.5 0 13.538 0 16 2.462 16 5.5c0 3.691-3.059 6.809-7.059 10.5L8 16.941Z"
+							/>
+						</svg>
+					)}
+					<div className="flex flex-row items-center justify-center px-24 gap-8">
+						{film.Poster !== "N/A" && (
+							<Image
+								src={film.Poster}
+								alt={film.Title}
+								width={300}
+								height={450}
+								className="rounded-lg"
+								priority={true}
+							/>
+						)}
+						<div className="flex flex-col w-1/2 justify-around">
+							<h1 className="text-4xl font-bold">{film.Title}</h1>
+							<p className="text-lg mt-2">{film.Plot}</p>
+							<p className="text-lg mt-8">
+								<strong>Year:</strong> {film.Year}
+							</p>
+							{film.Ratings[0] && (
+								<p className="text-lg mt-2">
+									<strong>Rated:</strong>{" "}
+									{film.Ratings[0].Value}
+								</p>
+							)}
+							<p className="text-lg mt-2">
+								<strong>Released:</strong> {film.Released}
+							</p>
+							<p className="text-lg mt-2">
+								<strong>Runtime:</strong> {film.Runtime}
+							</p>
+							<p className="text-lg mt-2">
+								<strong>Genre:</strong> {film.Genre}
+							</p>
+							<p className="text-lg mt-2">
+								<strong>Director:</strong> {film.Director}
+							</p>
+							<p className="text-lg mt-2">
+								<strong>Actors:</strong> {film.Actors}
+							</p>
+						</div>
 					</div>
-				</div>
+				</>
 			)}
 		</div>
 	);
