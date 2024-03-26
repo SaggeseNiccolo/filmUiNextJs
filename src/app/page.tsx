@@ -6,37 +6,35 @@ import SearchBar from "./components/SearchBar";
 import Pagination from "./components/Pagination";
 import Link from "next/link";
 
-export async function getFilms(title: string, page: number) {
+export async function getPopularFilms(page: number) {
+	const options = {
+		method: "GET",
+		headers: {
+			accept: "application/json",
+			Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
+		},
+	};
 	const res = await fetch(
-		`http://www.omdbapi.com/?s=${title}&page=${page}&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
+		`https://api.themoviedb.org/3/movie/popular?page=${page}&language=it-IT`,
+		options
 	);
 	const data = await res.json();
+	console.log(data);
 	return data;
 }
 
 export default function Home() {
-	const initialTitle = sessionStorage.getItem("title") || "spider";
-	const initialPage = parseInt(sessionStorage.getItem("page") || "1");
-
 	const [films, setFilms] = useState([]);
-	const [title, setTitle] = useState(initialTitle);
-	const [page, setPage] = useState(initialPage);
+	const [title, setTitle] = useState("");
+	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		getFilms(title, page).then((data) => {
-			setFilms(data);
+		getPopularFilms(page).then((data) => {
+			setFilms(data.results);
 			setLoading(false);
 		});
 	}, [title, page]);
-
-	useEffect(() => {
-		sessionStorage.setItem("title", title);
-	}, [title]);
-
-	useEffect(() => {
-		sessionStorage.setItem("page", page.toString());
-	}, [page]);
 
 	const handleSearch = (search: string) => {
 		setLoading(true);
@@ -62,19 +60,14 @@ export default function Home() {
 						<MovieCardSkeleton key={i} />
 					))}
 				</div>
-			) : (films as any)?.Search?.length > 0 ? (
+			) : (films as any[]).length > 0 ? (
 				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-					{(films as any)?.Search?.map((film: { imdbID: any }) => (
-						<Link
-							href={`/details/${film.imdbID}`}
-							key={film.imdbID}
-						>
+					{films.map((film: any) => (
+						<Link href={`/details/${film.id}`} key={film.id}>
 							<MovieCard
-								Title={""}
-								Year={""}
-								Poster={""}
-								key={film.imdbID}
-								{...film}
+								Title={film.title}
+								Year={film.release_date}
+								Poster={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
 							/>
 						</Link>
 					))}
@@ -88,7 +81,7 @@ export default function Home() {
 			<Pagination
 				handlePagination={handlePagination}
 				page={page}
-				maxPage={(films as any)?.totalResults / 10}
+				maxPage={(films as any)?.total_pages}
 			/>
 			{/* )} */}
 		</main>

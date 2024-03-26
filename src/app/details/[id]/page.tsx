@@ -4,38 +4,32 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface Film {
+	Id: string;
 	Title: string;
-	Plot: string;
+	Overview: string;
 	Poster: string;
-	Year: string;
-	Rated: string;
-	Released: string;
-	Runtime: string;
-	Genre: string;
-	Director: string;
-	Writer: string;
-	Actors: string;
-	Language: string;
-	Country: string;
-	Awards: string;
-	Ratings: { Source: string; Value: string }[];
-	Metascore: string;
-	imdbRating: string;
-	imdbVotes: string;
-	imdbID: string;
-	Type: string;
-	DVD: string;
-	BoxOffice: string;
-	Production: string;
-	Website: string;
-	Response: string;
+	ReleaseDate: string;
+	Runtime: number;
+	Genres: string[];
+	Status: string;
+	VoteAverage: number;
+	VoteCount: number;
 }
 
 const getFilm = async (id: string) => {
 	const res = await fetch(
-		`http://www.omdbapi.com/?i=${id}&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
+		// `http://www.omdbapi.com/?i=${id}&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
+		`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=it-IT`,
+		{
+			method: "GET",
+			headers: {
+				accept: "application/json",
+				Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN}`,
+			},
+		}
 	);
 	const data = await res.json();
+	console.log(data);
 	return data;
 };
 
@@ -44,7 +38,7 @@ const addFavorite = (film: Film) => {
 	if (favorite) {
 		const favoriteArray = JSON.parse(favorite);
 		const index = favoriteArray.findIndex(
-			(fav: { imdbID: string }) => fav.imdbID === film.imdbID
+			(fav: { Id: string }) => fav.Id === film.Id
 		);
 		if (index === -1) {
 			localStorage.setItem(
@@ -62,7 +56,7 @@ const removeFavorite = (id: string) => {
 	if (favorite) {
 		const favoriteArray = JSON.parse(favorite);
 		const index = favoriteArray.findIndex(
-			(fav: { imdbID: string }) => fav.imdbID === id
+			(fav: { Id: string }) => fav.Id === id
 		);
 		if (index !== -1) {
 			favoriteArray.splice(index, 1);
@@ -76,13 +70,28 @@ const checkFavorite = (id: string) => {
 	if (favorite) {
 		const favoriteArray = JSON.parse(favorite);
 		const index = favoriteArray.findIndex(
-			(fav: { imdbID: string }) => fav.imdbID === id
+			(fav: { Id: string }) => fav.Id === id
 		);
 		if (index !== -1) {
 			return true;
 		}
 	}
 	return false;
+};
+
+const mapDataToFilm = (data: any): Film => {
+	return {
+		Id: data.id,
+		Title: data.title,
+		Overview: data.overview,
+		Poster: data.poster_path,
+		ReleaseDate: data.release_date,
+		Runtime: data.runtime,
+		Genres: data.genres.map((genre: { name: string }) => genre.name),
+		Status: data.status,
+		VoteAverage: data.vote_average,
+		VoteCount: data.vote_count,
+	};
 };
 
 export default function Details({
@@ -100,7 +109,7 @@ export default function Details({
 
 	useEffect(() => {
 		getFilm(id).then((data) => {
-			setFilm(data);
+			setFilm(mapDataToFilm(data));
 			setLoading(false);
 		});
 	}, [id]);
@@ -158,7 +167,7 @@ export default function Details({
 					<div className="flex flex-row items-center justify-center px-24 gap-8">
 						{film.Poster !== "N/A" && (
 							<Image
-								src={film.Poster}
+								src={`https://image.tmdb.org/t/p/w300${film.Poster}`}
 								alt={film.Title}
 								width={300}
 								height={450}
@@ -168,30 +177,20 @@ export default function Details({
 						)}
 						<div className="flex flex-col w-1/2 justify-around">
 							<h1 className="text-4xl font-bold">{film.Title}</h1>
-							<p className="text-lg mt-2">{film.Plot}</p>
+							<p className="text-lg mt-2">{film.Overview}</p>
 							<p className="text-lg mt-8">
-								<strong>Year:</strong> {film.Year}
-							</p>
-							{film.Ratings[0] && (
-								<p className="text-lg mt-2">
-									<strong>Rated:</strong>{" "}
-									{film.Ratings[0].Value}
-								</p>
-							)}
-							<p className="text-lg mt-2">
-								<strong>Released:</strong> {film.Released}
+								<strong>Released:</strong> {film.ReleaseDate}
 							</p>
 							<p className="text-lg mt-2">
-								<strong>Runtime:</strong> {film.Runtime}
+								<strong>Rating:</strong>{" "}
+								{film.VoteAverage.toFixed(2)} ({film.VoteCount})
 							</p>
 							<p className="text-lg mt-2">
-								<strong>Genre:</strong> {film.Genre}
+								<strong>Runtime:</strong> {film.Runtime} minutes
 							</p>
 							<p className="text-lg mt-2">
-								<strong>Director:</strong> {film.Director}
-							</p>
-							<p className="text-lg mt-2">
-								<strong>Actors:</strong> {film.Actors}
+								<strong>Genres:</strong>{" "}
+								{film.Genres.join(", ")}
 							</p>
 						</div>
 					</div>

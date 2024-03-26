@@ -9,21 +9,6 @@ interface MovieCardProps {
 export default function MovieCard(props: MovieCardProps) {
 	return (
 		<>
-			<div className="flex flex-col justify-between p-4 cursor-pointer hover:scale-105 transition duration-200 rounded-lg bg-slate-950 min-h-[400px]">
-				{props.Poster !== "N/A" && (
-					<Image
-						src={props.Poster}
-						alt={props.Title}
-						width={300}
-						height={450}
-						priority={true}
-						className="rounded-lg"
-					/>
-				)}
-				<h3>{props.Title}</h3>
-				<p className="text-end">{props.Year}</p>
-			</div>
-
 			<div className="flex flex-col justify-between cursor-pointer hover:scale-105 transition duration-200">
 				{props.Poster !== "N/A" && (
 					<>
@@ -36,16 +21,16 @@ export default function MovieCard(props: MovieCardProps) {
 							className="rounded-lg"
 						/>
 						<div
-							className="relative top-0 left-0 w-20 h-full z-20"
+							className="relative top-0 left-0 w-[70%] z-20"
 							style={{
 								boxShadow:
-									"0 -20px 10px 30px rgba(255,255,255,0.5)",
+									"rgb(0 0 0 / 80%) 2rem -2rem 1rem 3rem",
 							}}
 						></div>
 					</>
 				)}
-				<h3 className="relative bottom-16">{props.Title}</h3>
-				<p className="relative bottom-16 text-end">{props.Year}</p>
+				<h3 className="relative bottom-16 z-30">{props.Title}</h3>
+				<p className="relative bottom-16 text-end z-30">{props.Year}</p>
 			</div>
 		</>
 	);
