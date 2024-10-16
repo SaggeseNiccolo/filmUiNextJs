@@ -60,7 +60,7 @@ export default function Home() {
 						<MovieCardSkeleton key={i} />
 					))}
 				</div>
-			) : (films as any[]).length > 0 ? (
+			) : films && (films as any[]).length > 0 ? (
 				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 					{films.map((film: any) => (
 						<Link href={`/details/${film.id}`} key={film.id}>
